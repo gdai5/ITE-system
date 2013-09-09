@@ -1,5 +1,7 @@
 package janCode;
 
+import Panel.testInputPanel;
+
 //import javax.swing.text.*;
 
 class JanCodeProcess {

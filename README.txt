@@ -1,3 +1,31 @@
+プログラムの内部構成
+src
+  -janCode
+    -JanCodeProcess.java
+      MainでtestInputPanelを呼びだす
+    -JancodeSearch.java
+      Jsoupを用いてタイトルと商品コードを取得する
+    -NewReadWriteCsv.java
+      編集後にcsvファイルに商品データを書き込む
+  -Panel
+    -LeftPanel.java
+      Frame上の左半分を表示する
+    -RightPanel.java
+      Frame上の右半分を表示する
+    -testInputPanel.java
+      RightPanelとLeftPanelを呼び出してFrameに貼る
+  -PanelContets
+    -Days.java
+      LeftPanelで用いる日付の作成
+    -Prefectures.java
+      LeftPanelで用いる都道府県の作成
+    -Times.java
+      LeftPanelで用いる出品時間を作成
+  -RSA
+    -RsaPublicKey.java
+      同じディレクトリにあるPublicKey.txtを読み込んで認証を行うプログラム
+
+
 作成日：2013-08-26
 
 バグの報告

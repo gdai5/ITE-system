@@ -1,3 +1,10 @@
+/*
+ * 2013-09-09
+ * 修正項目
+ * 課題表番号「２、３、４、６、７」
+ * 「修正箇所」で検索した場所を修正
+ */
+
 package janCode;
 
 /* 
@@ -393,6 +400,7 @@ public class JanCodeSearch {
 		return returnValue;
 	}
 
+	//
 	public String[] getiteminfo(String jancode) {
 		JanCodeSearch jcsearch = new JanCodeSearch();
 
@@ -425,6 +433,15 @@ public class JanCodeSearch {
 				e.printStackTrace();
 			}
 		}
+		/*
+		 * 修正箇所
+		 * returntitle[MAKERNUMBER]に入っている文字列を修正
+		 * 余分な余白と「廃盤」の文字を削除
+		 * 
+		 * returntitle[TITLE]を修正する
+		 * 全角英数字を半角英数字に置き換える
+		 * また置き換えた後全ての余白を半角スペースに置き換える
+		 */
 		return returntitle;
 	}
 

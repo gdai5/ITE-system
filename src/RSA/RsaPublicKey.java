@@ -72,7 +72,7 @@ public final class RsaPublicKey {
 	 */
 	public final PublicKey loadPublicKey(String filename) {
 		if (!chkFileExist(filename)) {
-			// System.out.println("公開鍵が存在しません");
+			// System.out.println("PublicKey.txtファイルが見つかりませんでした");
 			return null;
 		}
 		try {
