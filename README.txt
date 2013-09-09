@@ -1,75 +1,75 @@
-�v���O�����̓����\��
+プログラムの内部構成
 src
   -janCode
     -JanCodeProcess.java
-      Main��testInputPanel���Ăт���
+      MainでtestInputPanelを呼びだす
     -JancodeSearch.java
-      Jsoup��p���ă^�C�g���Ə��i�R�[�h���擾����
+      Jsoupを用いてタイトルと商品コードを取得する
     -NewReadWriteCsv.java
-      �ҏW���csv�t�@�C���ɏ��i�f�[�^����������
+      編集後にcsvファイルに商品データを書き込む
   -Panel
     -LeftPanel.java
-      Frame��̍�������\������
+      Frame上の左半分を表示する
     -RightPanel.java
-      Frame��̉E������\������
+      Frame上の右半分を表示する
     -testInputPanel.java
-      RightPanel��LeftPanel���Ăяo����Frame�ɓ\��
+      RightPanelとLeftPanelを呼び出してFrameに貼る
   -PanelContets
     -Days.java
-      LeftPanel�ŗp������t�̍쐬
+      LeftPanelで用いる日付の作成
     -Prefectures.java
-      LeftPanel�ŗp����s���{���̍쐬
+      LeftPanelで用いる都道府県の作成
     -Times.java
-      LeftPanel�ŗp����o�i���Ԃ��쐬
+      LeftPanelで用いる出品時間を作成
   -RSA
     -RsaPublicKey.java
-      �����f�B���N�g���ɂ���PublicKey.txt��ǂݍ���ŔF�؂��s���v���O����
+      同じディレクトリにあるPublicKey.txtを読み込んで認証を行うプログラム
 
 
-�쐬���F2013-08-26
+作成日：2013-08-26
 
-�o�O�̕�
-�o�O�̊m�F�ł������t�F2013-08-26
-�P�F�J�e�S���[�����āAjan�R�[�h��ǂݍ��ނƉ����������Ȃ����̂܂܃J�e�S���[�ɖ߂�B
-�@�@���̂Ƃ��́A�ݒ�����i���ɐF�X�ƕύX�����肵�Ă����B�����A���̂Ƃ���Č��ł��Ă��Ȃ�
-�@�@�ǂ����Ajancode_serach�ŃG���[���N���Ă���
-�Ώ��F��x�V�X�e����؂�ƂȂ���
+バグの報告
+バグの確認できた日付：2013-08-26
+１：カテゴリーを入れて、janコードを読み込むと何も反応がなくそのままカテゴリーに戻る。
+　　そのときは、設定を商品毎に色々と変更したりしていた。ただ、今のところ再現できていない
+　　どうやら、jancode_serachでエラーが起きている
+対処：一度システムを切るとなおる
 
-�Q�F�s�撬���Ȃǂ̓��͂��ł���t�B�[���h�ł͖{�����������I�[�o�[���Ă����Ԃ�
-�@�@�t�H�[�J�X�����炷�ƌx�����ł邪�A�V�X�e���ȊO�Ƀt�H�[�J�X�����킹��
-�@�@������x�V�X�e����Ƀt�H�[�J�X��߂��ƌx�������񂩏o�邪�A�ʂ̏ꏊ��
-�@�@�t�H�[�J�X���ڂ���悤�ɂȂ��Ă��܂��A���̂܂ܓo�^���ł��Ă��܂�
-�Ώ��F�w�肵�������ȓ��ł��邱�Ƃ��m�F���Ă��炤
+２：市区町村などの入力ができるフィールドでは本来文字数がオーバーしている状態で
+　　フォーカスをずらすと警告がでるが、システム以外にフォーカスを合わせて
+　　もう一度システム上にフォーカスを戻すと警告が何回か出るが、別の場所に
+　　フォーカスを移せるようになってしまい、そのまま登録ができてしまう
+対処：指定した文字以内であることを確認してもらう
 
-�R�F�{�V�X�e���ł́u�s�撬���v�̓��͗��ł́u�P�T�����v�܂œ��͂ł���悤�ɂȂ��Ă��邪�Aauctown�̎d�l�ύX�ɂ��
-�@�@�u�P�O�����v�ɕύX����Ă���B���̂��߁A�P�O�������������������łP�T�����ȓ����Ɩ{�V�X�e����ł�csv�t�@�C���ɏ������ނ��Ƃ��ł��邪
-�@�@auctown�ɏグ�鎞�ɃG���[���N���Ă��܂��B
-�Ώ��F�P�O�����ȓ��œ��͂��Ă��炤
+３：本システムでは「市区町村」の入力欄では「１５文字」まで入力できるようになっているが、auctownの仕様変更により
+　　「１０文字」に変更されている。そのため、１０文字よりも多い文字数で１５文字以内だと本システム上ではcsvファイルに書き込むことができるが
+　　auctownに上げる時にエラーが起きてしまう。
+対処：１０文字以内で入力してもらう
 
-�S�F��s������ꂽ��ԂŁA��s�U���Ƀ`�F�b�N�����Ă��Ȃ���auctown��ŃG���[���N���Ă��܂�
-�Ώ��F��s�U���ɕK���`�F�b�N�����Ă����s��������
+４：銀行名を入れた状態で、銀行振込にチェックを入れていないとauctown上でエラーが起きてしまう
+対処：銀行振込に必ずチェックを入れてから銀行名を入れる
 
-�T�F���i��Ԃ����̑����`�F�b�N�ɓ���Ă���̂ɁA���l������������Ă��Ȃ��ꍇ
-�@�@auctown�ɏグ��ƃG���[���N���Ă��܂�
-�Ώ��F���i��Ԃ����̑��ɑI�������ꍇ�͕K�����l�ɕ��͂������Ă��邩�ǂ����m�F����
+５：商品状態がその他をチェックに入れているのに、備考が何も書かれていない場合
+　　auctownに上げるとエラーが起きてしまう
+対処：商品状態をその他に選択した場合は必ず備考に文章が入っているかどうか確認する
 
-�U�Fauctown���csv�t�@�C�����ł߂ďグ�����ɂȂ����G���[���N�����B�G���[���e��csv�t�@�C�������������Ƃ����G���[������
-�@�@csv�t�@�C����zip�t�@�C������蒼����������������Ƃ�����悤�����A�����̏ꍇ�͉��x����Ă����߂������B
-�Ώ��Fzip�t�@�C������蒼���B�������͕ʂ̃p�\�R����csv�t�@�C�����ړ������āA���̃p�\�R����zip�t�@�C�����쐬����B
-�@�@�@����ł����߂Ȃ炻��csv�t�@�C��������蒼���Ă��炤
+６：auctown上でcsvファイルを固めて上げた時になぜかエラーが起きた。エラー内容はcsvファイルが無かったというエラーだった
+　　csvファイルのzipファイルを作り直したら解決したこともあるようだが、自分の場合は何度やってもだめだった。
+対処：zipファイルを作り直す。もしくは別のパソコンにcsvファイルを移動させて、そのパソコンでzipファイルを作成する。
+　　　それでもだめならそのcsvファイルだけ作り直してもらう
 
-�m�F�ł������t�F2013-08-27
-�P�Fjancode�ɉ��������Ă��Ȃ��Ă��������n�܂��Ă��܂�
+確認できた日付：2013-08-27
+１：jancodeに何も入っていなくても検索が始まってしまう
 
 
-�{�V�X�e�����^�p�����ł̒��ӎ���
-�m�F�ł������t�F2013-08-26
-�P�FMac���L�̎d�l�H�ŁAcsv�t�@�C����ύX�����excel��ł͕��ʂɌ����邪�e�L�X�g�G�f�B�^�ŊJ����
-�@�@�{���u�J�������v�ŉ��s����āA���̍s�Ƀf�[�^���e������B
-�@�@�������Acsv�t�@�C���ɕύX�����������ƃe�L�X�g�G�f�B�^�Ō������Ɖ��s���u^M�v�ɒu��������Ă��܂�
-�@�@���ꂪ������csv�t�@�C�����ł߂Ă��_���ł���
-�Ώ��FWindows�ō�Ƃ���B��������csv�t�@�C���̒��g�̕ύX���s���ꍇ��excel�ł͂Ȃ��e�L�X�g�G�f�B�^�ŊJ���ďC�����Ă��炤
+本システムを運用する上での注意事項
+確認できた日付：2013-08-26
+１：Mac特有の仕様？で、csvファイルを変更するとexcel上では普通に見えるがテキストエディタで開くと
+　　本来「カラム名」で改行されて、次の行にデータ内容が入る。
+　　しかし、csvファイルに変更を加えたあとテキストエディタで見直すと改行が「^M」に置き換わってしまう
+　　それが原因でcsvファイルを固めてもダメである
+対処：Windowsで作業する。もしくはcsvファイルの中身の変更を行う場合はexcelではなくテキストエディタで開いて修正してもらう
 
-�m�F�ł������t�F2013-08-27
-�P�F��s���ɃX�y�[�X�����c���Ă��܂����ꍇ�A��s�U���Ƀ`�F�b�N���t���Ă��Ȃ����auttown�ɃA�b�v���[�h�ł��Ȃ�
-�Ώ��F��s���ɓ��͂��s���ۂɗ]���ȃX�y�[�X������Ȃ��悤�ɒ��ӂ��Ă��炤
+確認できた日付：2013-08-27
+１：銀行名にスペースだけ残ってしまった場合、銀行振込にチェックが付いていなければauttownにアップロードできない
+対処：銀行名に入力を行う際に余分なスペースが入らないように注意してもらう
