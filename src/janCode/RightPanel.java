@@ -224,7 +224,7 @@ final class RightPanel extends JPanel {
 		/* 商品説明 */
 		JPanel descriptiveareapanel = new JPanel();
 		descriptiveareapanel
-				.setBorder(BorderFactory.createTitledBorder("商品説明")); // タイトルボーダーの設定
+				.setBorder(BorderFactory.createTitledBorder("商品説明(必須)")); // タイトルボーダーの設定
 		GridLayout descriptiveareapanellayout = new GridLayout(); // タイトルボーダー内部に入れるために設定
 		descriptiveareapanel.setLayout(descriptiveareapanellayout);
 
@@ -305,6 +305,8 @@ final class RightPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				chkJancode(e);
+				//bug
+				//今のままだと、jancodeに何も入っていない場合でも検索が始まってしまう
 				tip.ItemRegister();
 				JancodeClear();
 				CategoryClear();

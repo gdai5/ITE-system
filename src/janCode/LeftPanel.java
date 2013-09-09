@@ -322,6 +322,9 @@ final class LeftPanel extends JPanel {
 			}
 		});
 
+		//bug
+		//今のままだと銀行振込にチェックを入れていない状態で銀行名だけを入力できる
+		//この場合auctownにアップロードするとエラーが起きてしまう
 		bank_settlement_chbox = new JCheckBox("銀行振込", true);
 		bank_settlement_chbox.addActionListener(new ActionListener() {
 			@Override
