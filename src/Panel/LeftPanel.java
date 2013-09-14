@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -582,6 +583,17 @@ final class LeftPanel extends JPanel {
 			bank_settlement_chbox.requestFocusInWindow();
 			return false;
 		}
+		if (chkCommaTextField(municipality)) {
+			JOptionPane.showMessageDialog(this,"市区町村から「,」を抜いて下さい");
+			municipality_field.requestFocusInWindow();
+			return false;
+		}
+		if (chkCommaTextField(bank_settlement_field)) {
+			JOptionPane.showMessageDialog(this,"受け取り先銀行名から「,」を抜いて下さい");
+			bank_settlement_textfield1.requestFocusInWindow();
+			return false;
+		}
+
 		return true;
 	}
 
@@ -658,5 +670,17 @@ final class LeftPanel extends JPanel {
 		if (this.frame instanceof testInputPanel) {
 			((testInputPanel) this.frame).rp.endPriceEnabled(enabled);
 		}
+	}
+	
+	/**
+	 * 2013-09-14
+	 * author Ishikawa
+	 * 全てのtextField上に「,」が存在する場合は警告を出す
+	 */
+	private final boolean chkCommaTextField(String text) {
+		if (text.indexOf(",") >= 0) {
+			return true;
+		}
+		return false;
 	}
 }

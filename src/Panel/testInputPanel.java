@@ -88,6 +88,11 @@ public final class testInputPanel extends JFrame {
 	}
 
 	// CSVファイルに書き込む
+	/**
+	 * 2013-09-14
+	 * author Ishikawa
+	 * 再出品回数を指定できるように修正
+	 */
 	private void InsertCsvfile() {
 		nrwc.writeCsv(rp.filename, rp.category, title, rp.descriptive,
 				rp.start_price, rp.end_price, lp.quantity, lp.day, lp.time, "",
@@ -98,7 +103,7 @@ public final class testInputPanel extends JFrame {
 				lp.other_settlement_field, rp.item_status, rp.item_status_note,
 				lp.send_back, lp.send_back_filed, lp.tender_exchange,
 				lp.early_exchange, lp.autoextension_exchange,
-				lp.cut_negotiation, "0", "いいえ", "いいえ", "いいえ", "無効", "いいえ",
+				lp.cut_negotiation, lp.relist, "いいえ", "いいえ", "いいえ", "無効", "いいえ",
 				"いいえ", "いいえ");
 	}
 
