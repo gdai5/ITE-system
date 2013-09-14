@@ -219,7 +219,11 @@ final class RightPanel extends JPanel {
 		item_status_field.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {
-				item_status_note = ((JTextField) e.getComponent()).getText();
+				if (((JTextField) e.getComponent()).getText().length() == 0) {
+					item_status_note = "";
+				}else{
+					item_status_note = ((JTextField) e.getComponent()).getText();
+				}
 			}
 
 			@Override

@@ -30,6 +30,7 @@ import javax.swing.JTextField;
 import PanelContets.Days;
 import PanelContets.Prefectures;
 import PanelContets.Times;
+import PanelContets.Relist;
 
 final class LeftPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -38,6 +39,8 @@ final class LeftPanel extends JPanel {
 	private String[] prefectures = new Prefectures().getPrefectures();
 	private String[] days = new Days().getDays();
 	private String[] times = new Times().getTimes();
+	private String[] relists = new Relist().getRelist();
+	private JComboBox<String> relist_box;
 	private JComboBox<String> day_box;
 	private JComboBox<String> time_box;
 	private JComboBox<String> prefectures_box;
@@ -60,6 +63,8 @@ final class LeftPanel extends JPanel {
 	// 販売形式
 	protected String sale_form = "オークション形式";
 	protected String cut_negotiation = "いいえ";
+	// 再出品回数
+	protected String relist = "0";
 	// 出品個数
 	protected String quantity = "1";
 	// 開催期間
@@ -89,8 +94,14 @@ final class LeftPanel extends JPanel {
 
 	final void setLeftPanel(JFrame frame) {
 		this.frame = frame;
+		
+		int _width = 500;
+		int _padding = 40;
+		int _textBoxHeight = 60;
+		int _entryItemPanelHeight = 650;
 
-		setLayout(new FlowLayout(FlowLayout.LEFT));
+		setLayout(new FlowLayout());
+		setPreferredSize(new Dimension(_width, _entryItemPanelHeight));
 		setBorder(BorderFactory.createTitledBorder("Yahooオークション設定"));
 		// 販売形式------------------------------------------------------start
 		JPanel saleform_panel = new JPanel();
@@ -143,13 +154,43 @@ final class LeftPanel extends JPanel {
 		 * 6-5 Ishikawa：個数および開催期間の設置＆データの取得
 		 */
 		// 個数＆開催期間------------------------------------------------------start
-		JPanel quantity_priod_panel = new JPanel();
+		JPanel quantity_relist_panel = new JPanel();
+		quantity_relist_panel.setPreferredSize(new Dimension(_width - _padding,
+				_textBoxHeight));
+		quantity_relist_panel.setBorder(BorderFactory
+				.createTitledBorder("再出品回数および出品個数"));
+		quantity_relist_panel.setLayout(new GridLayout(1, 2));
+
+		/**
+		 * 2013-09-14
+		 * author Ishikawa
+		 * 再出品回数が設定できるようになった
+		 */
+		// 再出品回数の設定
+		JPanel relist_panel = new JPanel();
+		JLabel relist_label = new JLabel("再出品回数");
+		relist_box = new JComboBox<String>(relists);
+		relist_box.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (relist_box.getSelectedIndex() == -1) {
+					relist = "non Selected";
+				} else {
+					relist = (String) relist_box.getSelectedItem();
+				}
+			}
+		});
+		relist_panel.add(relist_label);
+		relist_panel.add(relist_box);
+		quantity_relist_panel.add(relist_panel);
+
 		// 個数
 		JPanel quantity_panel = new JPanel();
-		quantity_panel.setBorder(BorderFactory.createTitledBorder("個数"));
 		JLabel quantity_label = new JLabel("  出品個数：１個  ");
 		quantity_panel.add(quantity_label);
-		quantity_priod_panel.add(quantity_panel);
+		quantity_relist_panel.add(quantity_panel);
+
+		add(quantity_relist_panel);
 
 		// 開催期間
 		JPanel priod_panel = new JPanel();
@@ -189,8 +230,8 @@ final class LeftPanel extends JPanel {
 		priod_panel.add(time_label);
 		priod_panel.add(day_box);
 		priod_panel.add(time_box);
-		quantity_priod_panel.add(priod_panel);
-		add(quantity_priod_panel);
+		add(priod_panel);
+		// add(quantity_priod_panel);
 		// 個数＆開催期間------------------------------------------------------end
 
 		// 発送元------------------------------------------------------start
@@ -309,6 +350,8 @@ final class LeftPanel extends JPanel {
 
 		// 決済方法------------------------------------------------------start
 		JPanel settlement_panel = new JPanel();
+		settlement_panel.setPreferredSize(new Dimension(_width - _padding,
+				110));
 		settlement_panel
 				.setBorder(BorderFactory.createTitledBorder("決済方法（必須）"));
 		settlement_panel.setLayout(new GridLayout(2, 1, 0, 0));
@@ -387,8 +430,11 @@ final class LeftPanel extends JPanel {
 			@Override
 			public void focusLost(FocusEvent e) {
 				chkShortStringLength(e);
-				bank_settlement_field = ((JTextField) e.getComponent())
-						.getText();
+				if (((JTextField) e.getComponent()).getText().length() == 0) {
+					bank_settlement_field = "";
+				}else{
+					bank_settlement_field = ((JTextField) e.getComponent()).getText();
+				}
 			}
 
 			@Override
@@ -522,19 +568,11 @@ final class LeftPanel extends JPanel {
 		/*
 		 * 修正箇所 ここに新しい項目として「再出品回数」をしていできるプルダウンボックスを設置
 		 */
-		/**
-		 * 2013-09-14
-		 * author Ishikawa
-		 */
-		JPanel relisting_panel = new JPanel();
 	}
 
 	/**
-	 * 2013-09-14 
-	 * author Ishikawa 
-	 * 処理： カテゴリー番号とjanコードが入力されて商品検索が行われる前に
-	 * 画面の左半分が正しく入力されているか確認する
-	 * 使用場所:testInputPanel
+	 * 2013-09-14 author Ishikawa 処理： カテゴリー番号とjanコードが入力されて商品検索が行われる前に
+	 * 画面の左半分が正しく入力されているか確認する 使用場所:testInputPanel
 	 */
 	protected final boolean chkLeftField() {
 		if (bank_settlement == "いいえ" && bank_settlement_field != "") {

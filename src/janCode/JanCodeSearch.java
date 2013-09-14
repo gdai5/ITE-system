@@ -433,25 +433,6 @@ public class JanCodeSearch {
 				e.printStackTrace();
 			}
 		}
-		/*
-		 * 修正箇所
-		 * returntitle[MAKERNUMBER]に入っている文字列を修正
-		 * 余分な余白と「廃盤」の文字を削除
-		 * 
-		 * returntitle[TITLE]を修正する
-		 * 全角英数字を半角英数字に置き換える
-		 * また置き換えた後全ての余白を半角スペースに置き換える
-		 */
-		
-		/**
-		 * 2013-09-14
-		 * author Egami
-		 * 商品コードにおける「廃盤」とスペースの削除
-		 * タイトルで複数のスペースが重なっているものを全て半角スペース一つに置き換える
-		 */
-		System.out.println(returntitle[MAKERNUMBER]);
-		returntitle[TITLE] = revisionTitle(returntitle[TITLE]);
-		returntitle[MAKERNUMBER] = revisionMakernumber(returntitle[MAKERNUMBER]);
 		
 		/*
 		 * 【課題番号2】
@@ -463,6 +444,16 @@ public class JanCodeSearch {
 				returntitle[i] = zenkakuToHankaku(returntitle[i]);
 			}
 		}
+		
+		/**
+		 * 2013-09-14
+		 * author Egami
+		 * 商品コードにおける「廃盤」とスペースの削除
+		 * タイトルで複数のスペースが重なっているものを全て半角スペース一つに置き換える
+		 */
+		System.out.println(returntitle[MAKERNUMBER]);
+		returntitle[MAKERNUMBER] = revisionMakernumber(returntitle[MAKERNUMBER]);
+		returntitle[TITLE] = revisionTitle(returntitle[TITLE]);
 		
 		return returntitle;
 	}
@@ -514,10 +505,10 @@ public class JanCodeSearch {
 		String output_makernumber;
 		
 		output_makernumber = input_makernumber;
+		output_makernumber = Pattern.compile("\\?").matcher(output_makernumber).replaceAll("");
 		output_makernumber = Pattern.compile("廃盤").matcher(output_makernumber).replaceAll("");			
 		output_makernumber = Pattern.compile("　").matcher(output_makernumber).replaceAll("");		
 		output_makernumber = Pattern.compile(" ").matcher(output_makernumber).replaceAll("");
-		output_makernumber = Pattern.compile("\\?").matcher(output_makernumber).replaceAll("");
 		
 		return output_makernumber;
 	}	
