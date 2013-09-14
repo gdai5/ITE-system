@@ -17,7 +17,9 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.*;
 
 import javax.sound.midi.SysexMessage;
@@ -405,7 +407,7 @@ public class JanCodeSearch {
 	}
 
 	//
-	public String[] getiteminfo(String jancode) {
+	public String[] getiteminfo(String jancode, List<String> NGwordlist, Map<String,String> changewordlist, boolean ngword, boolean barcode) {
 		JanCodeSearch jcsearch = new JanCodeSearch();
 
 		// Arzon Search
@@ -474,7 +476,17 @@ public class JanCodeSearch {
 		 */
 		returntitle[MAKERNUMBER] = revisionMakernumber(returntitle[MAKERNUMBER]);
 		returntitle[TITLE] = revisionTitle(returntitle[TITLE]);
-
+		
+		/**
+		 * 2013-09-14 author Egami
+		 * NGワードと商品コードの変換
+		 */
+		if(ngword) {
+			returntitle[TITLE] = delNGwordTitle(returntitle[TITLE], NGwordlist);
+		}
+		if(barcode){
+			returntitle[MAKERNUMBER] = changeMakernumber(returntitle[MAKERNUMBER], changewordlist);
+		}
 		return returntitle;
 	}
 
@@ -520,5 +532,46 @@ public class JanCodeSearch {
 		 */
 		return input_makernumber.replaceAll("(廃盤|[\\s]|　)", "") ;
 	}
+	
+	/**
+	 * 2013-09-14
+	 */
+	private String delNGwordTitle(String input_title, List<String> NGwordlist){
+		/*
+		 * タイトルから任意のNGワードを消す
+		 * タイトルを形態素解析後、連想配列の文字列を検索する。
+		 * ヒットしたNGワードは飛ばして連結する。
+		 */
+		String output_title;
+		output_title = input_title;
+		
+		for (int i = 0; i<NGwordlist.size(); i++) {
+			output_title = Pattern.compile(NGwordlist.get(i)).matcher(output_title).replaceAll("");
+		}
+		
+		return output_title;
+	}
+
+	/**
+	 * 2013-09-14
+	 */
+	private String changeMakernumber(String input_makernumber, Map<String,String> changewordlist){
+		/*
+		 * 商品コードの修正変更を行う。
+		 * 商品を形態素解析後、連想配列の文字列を検索する。
+		 * 任意の文字列に入れ替える。
+		 */
+		String output_makernumber;
+		output_makernumber = input_makernumber;
+		
+		for (String key : changewordlist.keySet()) {
+			output_makernumber = Pattern.compile(key).matcher(output_makernumber).replaceAll(changewordlist.get(key));
+		}
+		
+		return output_makernumber;
+	}
+	
+	
+
 
 }

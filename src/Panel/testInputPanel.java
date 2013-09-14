@@ -12,8 +12,17 @@ import janCode.NewReadWriteCsv;
 
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -33,14 +42,19 @@ public final class testInputPanel extends JFrame {
 	private Container contentPane;
 	private String[] item_info = new String[2];
 	private String title;
+	
+	public List<String> NGwordlist = new ArrayList<String>();
+	public Map<String,String> changewordlist = new HashMap<String,String>();
 
 	public testInputPanel() {
 	}
 
 	public void run() {
 		setFrame();
-		getLeftPanel();
+		setLeftPanel();
 		setRightPanel();
+		setNGwordList();
+		setChangewordList();
 		setVisible(true);
 	}
 
@@ -52,7 +66,7 @@ public final class testInputPanel extends JFrame {
 		contentPane = getContentPane();
 	}
 
-	private final void getLeftPanel() {
+	private final void setLeftPanel() {
 		lp.setLeftPanel(this);
 		contentPane.add(lp);
 	}
@@ -68,7 +82,7 @@ public final class testInputPanel extends JFrame {
 			return;
 		}
 
-		item_info = js.getiteminfo(rp.jancode); // [TITLE]:title
+		item_info = js.getiteminfo(rp.jancode, NGwordlist, changewordlist, rp.ngword, rp.barcode); // [TITLE]:title
 												// [MAKERNUMBER]:maker number
 		if (nrwc.searchCsv(rp.jancode)) {
 
@@ -178,5 +192,70 @@ public final class testInputPanel extends JFrame {
 				+ "ご確認ください。");
 		return false;
 	}
-
+	
+	/**
+	 * 2013-09-14
+	 */
+	private void setNGwordList() {
+		String word;
+		try {
+			File file = new File("NGwordList.txt");		
+			FileInputStream in = new FileInputStream(file);
+			InputStreamReader sr = new InputStreamReader(in, "UTF-8");
+			BufferedReader br = new BufferedReader(sr);
+			if (checkBeforeReadfile(file)){
+		        while((word = br.readLine()) != null){
+		        	System.out.println(word);
+		        	NGwordlist.add(word);
+		        }				
+			} else {
+				JOptionPane.showMessageDialog(null, "NGwordList.txtの読み込みが失敗しました。\n" +
+						"そのためNGワード削除機能は動きません。");
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 2013-09-14
+	 */
+	private void setChangewordList() {
+		String word;
+		String[] tempword;
+		try {
+			File file = new File("ChangewordList.txt");
+			FileInputStream in = new FileInputStream(file);
+			InputStreamReader sr = new InputStreamReader(in, "UTF-8");
+			BufferedReader br = new BufferedReader(sr);
+			if (checkBeforeReadfile(file)){
+		        while((word = br.readLine()) != null){
+		        	System.out.println(word);
+		        	tempword = word.split(",");
+		        	changewordlist.put(tempword[0],tempword[1]);
+		        }
+			} else {
+				JOptionPane.showMessageDialog(null, "ChangewordList.txtの読み込みが失敗しました。\n" +
+						"そのため商品コード変換機能は動きません。");
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+	
+	
+	private boolean checkBeforeReadfile(File file){
+		if (file.exists()){
+			if (file.isFile() && file.canRead()){
+				return true;
+	      }
+		}
+		
+		return false;
+	}
+	
 }
