@@ -1,4 +1,3 @@
-
 /*
  * 2013-09-09
  * 課題管理表「６、７、１１」
@@ -21,6 +20,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -29,7 +29,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
 
 final class RightPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -47,6 +46,8 @@ final class RightPanel extends JPanel {
 	private JRadioButton[] item_status_button = new JRadioButton[3];
 	private JTextField item_status_field;
 	private JLabel err_msg;
+	private JCheckBox ngword_chbox;
+	private JCheckBox barcode_chbox;
 
 	// ファイル名
 	protected String filename = "";
@@ -67,6 +68,11 @@ final class RightPanel extends JPanel {
 	protected String category = "";
 
 	private int item_count = 1;
+
+	// NGワード修正の有無
+	protected boolean ngword = false;
+	// 商品コードの修正の有無
+	protected boolean barcode = false;
 
 	final void setRightPanel(final testInputPanel tip) {
 		this.frame = tip;
@@ -226,8 +232,8 @@ final class RightPanel extends JPanel {
 
 		/* 商品説明 */
 		JPanel descriptiveareapanel = new JPanel();
-		descriptiveareapanel
-				.setBorder(BorderFactory.createTitledBorder("商品説明(必須)")); // タイトルボーダーの設定
+		descriptiveareapanel.setBorder(BorderFactory
+				.createTitledBorder("商品説明(必須)")); // タイトルボーダーの設定
 		GridLayout descriptiveareapanellayout = new GridLayout(); // タイトルボーダー内部に入れるために設定
 		descriptiveareapanel.setLayout(descriptiveareapanellayout);
 
@@ -278,19 +284,60 @@ final class RightPanel extends JPanel {
 
 		subtitlepanel.add(subtitle_field);
 		add(subtitlepanel);
-		
+
 		/*
-		 * 修正箇所「６、７」
-		 * 商品コードおよびNGワードの修正機能のON,OFF機能を実装する
+		 * 修正箇所「６、７」 商品コードおよびNGワードの修正機能のON,OFF機能を実装する
 		 */
-		
+		JPanel barcode_ngword_panel = new JPanel();
+		barcode_ngword_panel.setLayout(new GridLayout(1, 2));
+		barcode_ngword_panel.setBorder(BorderFactory
+				.createTitledBorder("商品コードとNGワードの修正機能")); // タイトルボーダーの設定
+
+		/**
+		 * 2013-09-14 author Ishikawa 商品コード修正の有無を選べるチェックボックスの追加
+		 */
+		JPanel barcode_panel = new JPanel();
+		barcode_chbox = new JCheckBox("商品コード修正機能");
+		barcode_chbox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (barcode_chbox.isSelected()) {
+					barcode = true;
+				} else {
+					barcode = false;
+				}
+			}
+		});
+		barcode_panel.add(barcode_chbox);
+		barcode_ngword_panel.add(barcode_panel);
+
+		/**
+		 * 2013-09-14 author Ishikawa NGワードの削除するか選べるチェックボックスの追加
+		 */
+		JPanel ngword_panel = new JPanel();
+		ngword_chbox = new JCheckBox("NGワードの削除機能");
+		ngword_chbox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (ngword_chbox.isSelected()) {
+					ngword = true;
+				} else {
+					ngword = false;
+				}
+			}
+		});
+		ngword_panel.add(ngword_chbox);
+		barcode_ngword_panel.add(ngword_panel);
+		// 商品コード＆NGワードの機能を追加
+		add(barcode_ngword_panel);
 
 		JPanel category_jancode_panel = new JPanel();
 		category_jancode_panel.setLayout(new GridLayout(1, 2));
 
 		/* カテゴリー */
 		JPanel categorypanel = new JPanel();
-		categorypanel.setBorder(BorderFactory.createTitledBorder("カテゴリー番号(半角数字)")); // タイトルボーダーの設定
+		categorypanel.setBorder(BorderFactory
+				.createTitledBorder("カテゴリー番号(半角数字)")); // タイトルボーダーの設定
 		GridLayout categorypanellayout = new GridLayout(); // タイトルボーダー内部に入れるために設定
 		categorypanel.setLayout(categorypanellayout);
 		category_field = new JTextField();
@@ -306,7 +353,8 @@ final class RightPanel extends JPanel {
 
 		/* JANコード */
 		JPanel jancodepanel = new JPanel();
-		jancodepanel.setBorder(BorderFactory.createTitledBorder("JANコード(半角数字)")); // タイトルボーダーの設定
+		jancodepanel
+				.setBorder(BorderFactory.createTitledBorder("JANコード(半角数字)")); // タイトルボーダーの設定
 		GridLayout jancodepanellayout = new GridLayout(); // タイトルボーダー内部に入れるために設定
 		jancodepanel.setLayout(jancodepanellayout);
 		jancode_field = new JTextField();
@@ -340,11 +388,12 @@ final class RightPanel extends JPanel {
 		regscrollpanel
 				.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-		regscrollpanel.setPreferredSize(new Dimension(_width - _padding, 170));
+		regscrollpanel.setPreferredSize(new Dimension(_width - _padding, 130));
 
 		registrationareapanel.add(regscrollpanel);
 		add(registrationareapanel);
 		// 個別商品登録------------------------------------------------------end
+
 	}
 
 	/*
@@ -490,14 +539,12 @@ final class RightPanel extends JPanel {
 		item_count++;
 	}
 
-	//ここが最終確認している場所
-	//修正箇所１１
+	// ここが最終確認している場所
+	// 修正箇所１１
 	/**
-	 * 2013-09-14
-	 * author Ishikawa
-	 * カテゴリー番号とjanコードが入力された後にauctown上でエラーが出る選択を
-	 * していないかどうかをチェックする
-	 * 使用場所:testInputPanel
+	 * 2013-09-14 author Ishikawa カテゴリー番号とjanコードが入力された後にauctown上でエラーが出る選択を
+	 * していないかどうかをチェックする 使用場所:testInputPanel
+	 * 
 	 * @return
 	 */
 	protected final boolean chkRightField() {
@@ -517,9 +564,10 @@ final class RightPanel extends JPanel {
 			JOptionPane.showMessageDialog(this, "カテゴリー番号を入力してください。");
 			category_field.requestFocusInWindow();
 			return false;
-		//商品状態がその他＆状態説明が何も書かれていない場合はエラー
+			// 商品状態がその他＆状態説明が何も書かれていない場合はエラー
 		} else if (item_status == "その他" && item_status_note == "") {
-			JOptionPane.showMessageDialog(this, "商品状態が「その他」の場合, 「商品状態の備考」の入力は必須です。");
+			JOptionPane.showMessageDialog(this,
+					"商品状態が「その他」の場合, 「商品状態の備考」の入力は必須です。");
 			item_status_field.requestFocusInWindow();
 			return false;
 		} else {
