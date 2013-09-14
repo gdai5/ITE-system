@@ -15,9 +15,12 @@ package janCode;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.*;
+
+import javax.sound.midi.SysexMessage;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -329,8 +332,9 @@ public class JanCodeSearch {
 				sValue = Jsoup.connect(arzonConfilmUrl).execute().cookie(sName);
 			}
 
-			Document searchDoc = Jsoup.connect(arzonSearchURl + jancode)
-					.cookie(sName, sValue).get();
+			Document searchDoc = Jsoup.parse(
+					Jsoup.connect(arzonSearchURl + jancode)
+							.cookie(sName, sValue).get().html(), "UTF-8");
 			String itemUrl = searchDoc.getElementById("item")
 					.getElementsByClass("pictlist").get(0)
 					.getElementsByClass("hentry").get(0).getElementsByTag("dt")
@@ -433,31 +437,49 @@ public class JanCodeSearch {
 				e.printStackTrace();
 			}
 		}
+
+		/*
+		 * 【課題番号4】
+		 * 2013-09-15 Tree
+		 * 半角スペース文字化け対策
+		 */
+		try {
+			if (returntitle[MAKERNUMBER] != null) {
+				byte[] makerNumberByteArray = returntitle[MAKERNUMBER]
+						.getBytes("Shift-JIS");
+				
+				for (int i = 0; i < makerNumberByteArray.length; i++) {
+					if (makerNumberByteArray[i] == 63) {
+						makerNumberByteArray[i] = 32;
+					}
+				}
+				
+				returntitle[MAKERNUMBER] = new String(makerNumberByteArray);
+			}
+		} catch (Exception e) {
+		}
 		
 		/*
-		 * 【課題番号2】
-		 * 2013-09-14 Tree
-		 * 全角英数字を半角に変換
+		 * 【課題番号2】 2013-09-14 Tree 全角英数字を半角に変換
 		 */
 		for (int i = 0; i < (returntitle == null ? 0 : returntitle.length); i++) {
 			if (!"".equals(returntitle[i]) && returntitle[i] != null) {
 				returntitle[i] = zenkakuToHankaku(returntitle[i]);
 			}
 		}
-		
+
 		/**
-		 * 2013-09-14
-		 * author Egami
-		 * 商品コードにおける「廃盤」とスペースの削除
+		 * 2013-09-14 author Egami 商品コードにおける「廃盤」とスペースの削除
 		 * タイトルで複数のスペースが重なっているものを全て半角スペース一つに置き換える
 		 */
 		System.out.println(returntitle[MAKERNUMBER]);
 		returntitle[MAKERNUMBER] = revisionMakernumber(returntitle[MAKERNUMBER]);
 		returntitle[TITLE] = revisionTitle(returntitle[TITLE]);
-		
+		System.out.println(returntitle[MAKERNUMBER]);
+
 		return returntitle;
 	}
-	
+
 	private String zenkakuToHankaku(String value) {
 		StringBuilder sb = new StringBuilder(value);
 		for (int i = 0; i < sb.length(); i++) {
@@ -470,47 +492,35 @@ public class JanCodeSearch {
 		value = sb.toString();
 		return value;
 	}
-	
+
 	/**
-	 * 2013-09-14
-	 * author Egami
-	 * タイトルで複数のスペースが重なっているものを全て半角スペース一つに置き換える
+	 * 2013-09-14 author Egami タイトルで複数のスペースが重なっているものを全て半角スペース一つに置き換える
 	 */
-	private String revisionTitle(String input_title){
-		/* 
-		 * returntitle[TITLE]を修正する
-		 * 全角スペース　＋　半角スペース　＝　半角スペース
+	private String revisionTitle(String input_title) {
+		/*
+		 * returntitle[TITLE]を修正する 全角スペース　＋　半角スペース　＝　半角スペース
 		 * また置き換えた後全ての余白を半角スペースに置き換える
 		 */
 		String output_title;
-		
+
 		output_title = input_title;
-		output_title = Pattern.compile("　").matcher(output_title).replaceAll(" ");
-		while (Pattern.compile("  ").matcher(output_title).find()){
-			output_title = Pattern.compile("  ").matcher(output_title).replaceAll(" ");
-		}	
+		output_title = Pattern.compile("　").matcher(output_title)
+				.replaceAll(" ");
+		while (Pattern.compile("  ").matcher(output_title).find()) {
+			output_title = Pattern.compile("  ").matcher(output_title)
+					.replaceAll(" ");
+		}
 		return output_title;
 	}
 
 	/**
-	 * 2013-09-14
-	 * author Egami
-	 * 商品コードにおける「廃盤」とスペースの削除
+	 * 2013-09-14 author Egami 商品コードにおける「廃盤」とスペースの削除
 	 */
-	private String revisionMakernumber(String input_makernumber){
+	private String revisionMakernumber(String input_makernumber) {
 		/*
-		 * returntitle[MAKERNUMBER]に入っている文字列を修正
-		 * 余分な余白と「廃盤」の文字を削除
+		 * returntitle[MAKERNUMBER]に入っている文字列を修正 余分な余白と「廃盤」の文字を削除
 		 */
-		String output_makernumber;
-		
-		output_makernumber = input_makernumber;
-		output_makernumber = Pattern.compile("\\?").matcher(output_makernumber).replaceAll("");
-		output_makernumber = Pattern.compile("廃盤").matcher(output_makernumber).replaceAll("");			
-		output_makernumber = Pattern.compile("　").matcher(output_makernumber).replaceAll("");		
-		output_makernumber = Pattern.compile(" ").matcher(output_makernumber).replaceAll("");
-		
-		return output_makernumber;
-	}	
+		return input_makernumber.replaceAll("(廃盤|[\\s]|　)", "") ;
+	}
 
 }
