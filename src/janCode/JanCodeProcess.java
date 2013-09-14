@@ -6,8 +6,8 @@ import Panel.testInputPanel;
 
 class JanCodeProcess {
 	public static void main(String args[]) {
-		if (testInputPanel.chkLicenseKey()) {
+		//if (testInputPanel.chkLicenseKey()) {
 			new testInputPanel().run();
-		}
+		//}
 	}
 }

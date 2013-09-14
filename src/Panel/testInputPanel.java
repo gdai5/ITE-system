@@ -64,7 +64,11 @@ public final class testInputPanel extends JFrame {
 	}
 
 	protected final void ItemRegister() {
+		//C³‰ÓŠ‚P‚P
 		if (!rp.chkRightField()) {
+			return;
+		}
+		if (!lp.chkLeftField()){
 			return;
 		}
 
@@ -79,7 +83,7 @@ public final class testInputPanel extends JFrame {
 					item_info[1]);
 			addSubtitle();
 			
-			//C³‰ÓŠ‚WA‚P‚P
+			//C³‰ÓŠ‚W
 			//TextEvent‚ÅƒŠƒAƒ‹ƒ^ƒCƒ€‚É”½‰f
 			String titleEditMsg = "ƒ^ƒCƒgƒ‹‚Ì•ÒW ( ƒ^ƒCƒgƒ‹‚Í30•¶šˆÈ“à‚É‚µ‚Ä‚­‚¾‚³‚¢B ‘SŠp1 ”¼Šp0.5 )";
 			do {
