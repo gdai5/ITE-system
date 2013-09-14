@@ -492,6 +492,14 @@ final class RightPanel extends JPanel {
 
 	//ここが最終確認している場所
 	//修正箇所１１
+	/**
+	 * 2013-09-14
+	 * author Ishikawa
+	 * カテゴリー番号とjanコードが入力された後にauctown上でエラーが出る選択を
+	 * していないかどうかをチェックする
+	 * 使用場所:testInputPanel
+	 * @return
+	 */
 	protected final boolean chkRightField() {
 		if (stringIsNullOrEmpty(filename)) {
 			JOptionPane.showMessageDialog(this, "登録ファイル名を入力してください。");

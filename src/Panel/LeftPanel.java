@@ -522,14 +522,19 @@ final class LeftPanel extends JPanel {
 		/*
 		 * 修正箇所 ここに新しい項目として「再出品回数」をしていできるプルダウンボックスを設置
 		 */
+		/**
+		 * 2013-09-14
+		 * author Ishikawa
+		 */
+		JPanel relisting_panel = new JPanel();
 	}
 
 	/**
-	 * 2013-09-14 author Ishikawa 
+	 * 2013-09-14 
+	 * author Ishikawa 
 	 * 処理： カテゴリー番号とjanコードが入力されて商品検索が行われる前に
 	 * 画面の左半分が正しく入力されているか確認する
-	 * 
-	 * @return
+	 * 使用場所:testInputPanel
 	 */
 	protected final boolean chkLeftField() {
 		if (bank_settlement == "いいえ" && bank_settlement_field != "") {
