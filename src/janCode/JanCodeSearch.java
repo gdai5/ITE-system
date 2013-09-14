@@ -442,7 +442,31 @@ public class JanCodeSearch {
 		 * 全角英数字を半角英数字に置き換える
 		 * また置き換えた後全ての余白を半角スペースに置き換える
 		 */
+		
+		/*
+		 * 【課題番号2】
+		 * 2013-09-14 Tree
+		 * 全角英数字を半角に変換
+		 */
+		for (int i = 0; i < (returntitle == null ? 0 : returntitle.length); i++) {
+			if (!"".equals(returntitle[i]) && returntitle[i] != null) {
+				returntitle[i] = zenkakuToHankaku(returntitle[i]);
+			}
+		}
+
 		return returntitle;
 	}
-
+	
+	private String zenkakuToHankaku(String value) {
+		StringBuilder sb = new StringBuilder(value);
+		for (int i = 0; i < sb.length(); i++) {
+			int c = (int) sb.charAt(i);
+			if ((c >= 0xFF10 && c <= 0xFF19) || (c >= 0xFF21 && c <= 0xFF3A)
+					|| (c >= 0xFF41 && c <= 0xFF5A)) {
+				sb.setCharAt(i, (char) (c - 0xFEE0));
+			}
+		}
+		value = sb.toString();
+		return value;
+	}
 }
