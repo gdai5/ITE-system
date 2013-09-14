@@ -33,7 +33,6 @@ public final class testInputPanel extends JFrame {
 	private Container contentPane;
 	private String[] item_info = new String[2];
 	private String title;
-	private StringBuilder sb = new StringBuilder();
 
 	public testInputPanel() {
 	}
@@ -65,33 +64,20 @@ public final class testInputPanel extends JFrame {
 
 	protected final void ItemRegister() {
 		// 修正箇所１１
-		if (!rp.chkRightField()) {
-			return;
-		}
-		if (!lp.chkLeftField()) {
+		if (!rp.chkRightField() || !lp.chkLeftField()) {
 			return;
 		}
 
 		item_info = js.getiteminfo(rp.jancode); // [TITLE]:title
 												// [MAKERNUMBER]:maker number
 		if (nrwc.searchCsv(rp.jancode)) {
-			// jancodeが重複していない場合の処理
-			// CSVファイル書き込み
-			String itemCdEditMsg = "商品コードの編集 ( 半角 )";
 
-			item_info[1] = JOptionPane.showInputDialog(this, itemCdEditMsg,
-					item_info[1]);
-			addSubtitle();
-
-			// 修正箇所８
-			// TextEventでリアルタイムに反映
-			String titleEditMsg = "タイトルの編集 ( タイトルは30文字以内にしてください。 全角1 半角0.5 )";
-			do {
-				title = JOptionPane.showInputDialog(this, titleEditMsg + "現在："
-						+ titleCharCount(title) + "文字", title);
-			} while (titleCharCount(title) > 30);
+			ItemConfilmDialog icd = new ItemConfilmDialog(item_info[1] + " "
+					+ item_info[0]);
+			title = icd.txtTitle.getText();
 
 			InsertCsvfile();
+
 			rp.writeRegisterInfo(title);
 		} else {
 			// jancodeが重複している場合の処理
@@ -99,42 +85,6 @@ public final class testInputPanel extends JFrame {
 			JLabel msg = new JLabel("登録済みです：" + rp.jancode); // ポップアップ作成
 			JOptionPane.showMessageDialog(this, msg); // ポップアップ表示
 		}
-	}
-
-	/**
-	 * タイトル文字数のカウントメソッド
-	 * 
-	 * @param string
-	 * @return 全角を1,半角を0.5とした場合の天井値
-	 */
-	private double titleCharCount(String string) {
-		double count = 0;
-
-		// 半角 0.5
-		count += (double) (string.replaceAll("[^ -~｡-ﾟ]*", "").length()) / 2.0;
-
-		// 全角 1
-		count += (double) string.replaceAll("[ -~｡-ﾟ]*", "").length();
-
-		// 【課題番号8】 2013-09-14 Tree
-		// 半角カタカナは 1 としてカウントするため、 0.5 を足し込む。
-		count += (double) (string.replaceAll("[^ｦ-ﾟ]*", "").length()) / 2.0;
-
-		return count;
-	}
-
-	// サブタイトルの追加
-	private void addSubtitle() {
-		sb.append(item_info[TITLE]);
-		if (item_info[MAKERNUMBER] != "") {
-			sb.insert(0, item_info[MAKERNUMBER] + " "); // title = subtitle
-														// makernumber title
-		}
-		if (!(rp.subtitle.length() == 0)) {
-			sb.insert(0, rp.subtitle + " "); // title = subtitle title
-		}
-		title = new String(sb);
-		sb.setLength(0);
 	}
 
 	// CSVファイルに書き込む
