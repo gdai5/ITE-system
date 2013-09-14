@@ -107,7 +107,7 @@ public final class testInputPanel extends JFrame {
 	 * @param string
 	 * @return 全角を1,半角を0.5とした場合の天井値
 	 */
-	private int titleCharCount(String string) {
+	private double titleCharCount(String string) {
 		double count = 0;
 
 		// 半角 0.5
@@ -120,7 +120,7 @@ public final class testInputPanel extends JFrame {
 		// 半角カタカナは 1 としてカウントするため、 0.5 を足し込む。
 		count += (double) (string.replaceAll("[^ｦ-ﾟ]*", "").length()) / 2.0;
 
-		return (int) Math.ceil(count);
+		return count;
 	}
 
 	// サブタイトルの追加
