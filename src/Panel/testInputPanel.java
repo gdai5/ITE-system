@@ -72,7 +72,7 @@ public final class testInputPanel extends JFrame {
 												// [MAKERNUMBER]:maker number
 		if (nrwc.searchCsv(rp.jancode)) {
 
-			ItemConfilmDialog icd = new ItemConfilmDialog(item_info[1] + " "
+			ItemConfilmDialog icd = new ItemConfilmDialog(rp.subtitle + " " + item_info[1] + " "
 					+ item_info[0]);
 			title = icd.txtTitle.getText();
 

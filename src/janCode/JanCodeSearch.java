@@ -472,10 +472,8 @@ public class JanCodeSearch {
 		 * 2013-09-14 author Egami 商品コードにおける「廃盤」とスペースの削除
 		 * タイトルで複数のスペースが重なっているものを全て半角スペース一つに置き換える
 		 */
-		System.out.println(returntitle[MAKERNUMBER]);
 		returntitle[MAKERNUMBER] = revisionMakernumber(returntitle[MAKERNUMBER]);
 		returntitle[TITLE] = revisionTitle(returntitle[TITLE]);
-		System.out.println(returntitle[MAKERNUMBER]);
 
 		return returntitle;
 	}

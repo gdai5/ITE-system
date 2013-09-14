@@ -556,20 +556,29 @@ final class RightPanel extends JPanel {
 			JOptionPane.showMessageDialog(this, "登録ファイル名を入力してください。");
 			csvfilenametextfield.requestFocusInWindow();
 			return false;
-		} else if (stringIsNullOrEmpty(start_price)) {
+		}
+		if (chkCommaTextField(filename)) {
+			JOptionPane.showMessageDialog(this, "登録ファイル名に「,」は入れないでください");
+			csvfilenametextfield.requestFocusInWindow();
+			return false;
+		}
+		if (stringIsNullOrEmpty(start_price)) {
 			JOptionPane.showMessageDialog(this, "開始価格を入力してください。");
 			start_price_field.requestFocusInWindow();
 			return false;
-		} else if (stringIsNullOrEmpty(descriptive)) {
+		}
+		if (stringIsNullOrEmpty(descriptive)) {
 			JOptionPane.showMessageDialog(this, "商品説明を入力してください。");
 			descriptivearea.requestFocusInWindow();
 			return false;
-		} else if (stringIsNullOrEmpty(category)) {
+		}
+		if (stringIsNullOrEmpty(category)) {
 			JOptionPane.showMessageDialog(this, "カテゴリー番号を入力してください。");
 			category_field.requestFocusInWindow();
 			return false;
 			// 商品状態がその他＆状態説明が何も書かれていない場合はエラー
-		} else if (item_status == "その他" && item_status_note == "") {
+		}
+		if (item_status == "その他" && item_status_note == "") {
 			JOptionPane.showMessageDialog(this,
 					"商品状態が「その他」の場合, 「商品状態の備考」の入力は必須です。");
 			item_status_field.requestFocusInWindow();
@@ -594,5 +603,17 @@ final class RightPanel extends JPanel {
 
 	private boolean stringIsNullOrEmpty(String str) {
 		return str == null || str.equals("");
+	}
+	
+	/**
+	 * 2013-09-14
+	 * author Ishikawa
+	 * 全てのtextField上に「,」が存在する場合は警告を出す
+	 */
+	private final boolean chkCommaTextField(String text) {
+		if (text.indexOf(",") >= 0) {
+			return true;
+		}
+		return false;
 	}
 }

@@ -14,8 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.regex.Pattern;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -424,7 +422,7 @@ final class LeftPanel extends JPanel {
 		left_settlement_text_panel.setBorder(BorderFactory
 				.createLineBorder(Color.black));
 		left_settlement_text_panel.setLayout(new GridLayout(2, 1));
-		JLabel bank_settlement_label = new JLabel("受け取り先銀行名の記入(15字以内)（任意）");
+		JLabel bank_settlement_label = new JLabel("受け取り先銀行名(15字以内)（任意）");
 
 		bank_settlement_textfield1 = new JTextField();
 		bank_settlement_textfield1.addFocusListener(new FocusListener() {
@@ -593,7 +591,16 @@ final class LeftPanel extends JPanel {
 			bank_settlement_textfield1.requestFocusInWindow();
 			return false;
 		}
-
+		if (chkCommaTextField(other_settlement_field)){
+			JOptionPane.showMessageDialog(this,"他の決済方法から「,」を抜いて下さい");
+			other_settlement_textfield1.requestFocusInWindow();
+			return false;
+		}
+		if (chkCommaTextField(send_back_filed)){
+			JOptionPane.showMessageDialog(this,"返品の可否備考欄から「,」を抜いて下さい");
+			send_back_textfiled.requestFocusInWindow();
+			return false;
+		}
 		return true;
 	}
 
