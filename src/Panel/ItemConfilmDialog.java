@@ -21,7 +21,11 @@ public class ItemConfilmDialog extends JDialog {
 	public ItemConfilmDialog(String defaultTitleText) {
 		super();
 
+		// テキストフィールドにタイトルの初期値を設定
+		// レイアウトに追加する前に初期値を設定しないとバグる。
 		txtTitle = new JTextField(defaultTitleText);
+
+		// テキストが変更された際に、文字数をカウントするリスナの設定
 		txtTitle.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent de) {
 				updateLengthInfo(de);
@@ -36,21 +40,24 @@ public class ItemConfilmDialog extends JDialog {
 			}
 		});
 
+		// OKボタンが押された際のイベントリスナ設定
 		btnOK.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				btnOKClickEvent(e);
+				dispose();
 			}
 		});
 
+		// レイアウトは縦に3行のグリッド
 		getContentPane().setLayout(new GridLayout(3, 1));
-
 		getContentPane().add(lbTitleLength);
 		getContentPane().add(txtTitle);
 		getContentPane().add(btnOK);
 
+		// 文字数を表示するラベルを更新
 		updateLengthInfo(null);
 
+		// その他設定
 		setTitle("タイトルの編集");
 		setBounds(50, 50, 500, 120);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -58,10 +65,11 @@ public class ItemConfilmDialog extends JDialog {
 		setVisible(true);
 	}
 
-	private void btnOKClickEvent(ActionEvent e) {
-		dispose();
-	}
-
+	/**
+	 * 現在の文字数をカウントし、ラベルに表示する。
+	 * 
+	 * @param de
+	 */
 	private void updateLengthInfo(DocumentEvent de) {
 		lbTitleLength.setText("タイトルは30文字以内にしてください。(全角1 半角0.5) 現在 : "
 				+ titleCharCount(txtTitle.getText()));
@@ -70,9 +78,11 @@ public class ItemConfilmDialog extends JDialog {
 	@Override
 	public void dispose() {
 		if (titleCharCount(txtTitle.getText()) <= 30.0) {
+			// 文字数に問題がなければ、モーダルを解除
 			setModal(false);
 			super.dispose();
 		} else {
+			// 文字数に問題があれば、警告ダイアログを表示
 			JOptionPane.showMessageDialog(this,
 					"タイトルは30文字以内にしてください。(全角1 半角0.5)");
 		}
