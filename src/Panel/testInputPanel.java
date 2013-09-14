@@ -64,11 +64,11 @@ public final class testInputPanel extends JFrame {
 	}
 
 	protected final void ItemRegister() {
-		//修正箇所１１
+		// 修正箇所１１
 		if (!rp.chkRightField()) {
 			return;
 		}
-		if (!lp.chkLeftField()){
+		if (!lp.chkLeftField()) {
 			return;
 		}
 
@@ -82,9 +82,9 @@ public final class testInputPanel extends JFrame {
 			item_info[1] = JOptionPane.showInputDialog(this, itemCdEditMsg,
 					item_info[1]);
 			addSubtitle();
-			
-			//修正箇所８
-			//TextEventでリアルタイムに反映
+
+			// 修正箇所８
+			// TextEventでリアルタイムに反映
 			String titleEditMsg = "タイトルの編集 ( タイトルは30文字以内にしてください。 全角1 半角0.5 )";
 			do {
 				title = JOptionPane.showInputDialog(this, titleEditMsg + "現在："
@@ -108,10 +108,19 @@ public final class testInputPanel extends JFrame {
 	 * @return 全角を1,半角を0.5とした場合の天井値
 	 */
 	private int titleCharCount(String string) {
-		String hankaku = string.replaceAll("[^ -~｡-ﾟ]*", "");
-		String zenkaku = string.replaceAll("[ -~｡-ﾟ]*", "");
-		return (int) Math.ceil((double) zenkaku.length()
-				+ (double) hankaku.length() / 2);
+		double count = 0;
+
+		// 半角 0.5
+		count += (double) (string.replaceAll("[^ -~｡-ﾟ]*", "").length()) / 2.0;
+
+		// 全角 1
+		count += (double) string.replaceAll("[ -~｡-ﾟ]*", "").length();
+
+		// 【課題番号8】 2013-09-14 Tree
+		// 半角カタカナは 1 としてカウントするため、 0.5 を足し込む。
+		count += (double) (string.replaceAll("[^ｦ-ﾟ]*", "").length()) / 2.0;
+
+		return (int) Math.ceil(count);
 	}
 
 	// サブタイトルの追加
@@ -158,8 +167,8 @@ public final class testInputPanel extends JFrame {
 		// 公開鍵のロード
 		public_key = rsa_pub.loadPublicKey("PublicKey.txt");
 		if (public_key == null) {
-			JOptionPane.showMessageDialog(null, "PublicKey.txtが見つかりませんでした。\n" +
-					                            "PublicKey.txtをITE-ver1.5.jarがある場所と同じ位置に置いてください。");
+			JOptionPane.showMessageDialog(null, "PublicKey.txtが見つかりませんでした。\n"
+					+ "PublicKey.txtをITE-ver1.5.jarがある場所と同じ位置に置いてください。");
 			return false;
 		}
 		// ライセンスキーの取得
@@ -169,35 +178,36 @@ public final class testInputPanel extends JFrame {
 				titleEditMsg, "");
 		byte[] license_key = rsa_pub.loadLicenseKey(license_filename);
 		if (license_key == null) {
-			JOptionPane.showMessageDialog(null, "正しくライセンスキーが取得出来ませんでした。以下の原因が考えられます。\n" +
-					                            "１：無線（有線）接続に対して有線（無線）のライセンスキーを使っている\n" +
-					                            "２：別のパソコンのライセンスキーを使っている\n" +
-					                            "３：入力したファイル名が間違っている(.txtが抜けているなど)\n" +
-					                            "４：ライセンスキーが壊れてる\n" +
-					                            "以上のことをご確認ください。");
+			JOptionPane.showMessageDialog(null,
+					"正しくライセンスキーが取得出来ませんでした。以下の原因が考えられます。\n"
+							+ "１：無線（有線）接続に対して有線（無線）のライセンスキーを使っている\n"
+							+ "２：別のパソコンのライセンスキーを使っている\n"
+							+ "３：入力したファイル名が間違っている(.txtが抜けているなど)\n"
+							+ "４：ライセンスキーが壊れてる\n" + "以上のことをご確認ください。");
 			return false;
 		}
 		// 暗号文（license_key）を公開鍵（pubilc_key）で複合化
 		byte[] dec = rsa_pub.decrypt(license_key, public_key);
 		if (dec == null) {
-			JOptionPane.showMessageDialog(null, "複合に失敗しました。\n" +
-					                            "PublicKey.txtが破損している可能性があります。\n" +
-					                            "CDからPublicKey.txtを再度コピーしてください");
+			JOptionPane.showMessageDialog(null, "複合に失敗しました。\n"
+					+ "PublicKey.txtが破損している可能性があります。\n"
+					+ "CDからPublicKey.txtを再度コピーしてください");
 			return false;
 		}
 		// Macアドレスの取得
 		ArrayList<String> macAddressList = new ArrayList<String>();
 		macAddressList = rsa_pub.getMacAddress();
 		if (macAddressList == null) {
-			JOptionPane.showMessageDialog(null, "システムエラー\n" +
-					                            "パソコンのIDを取得することができませんでした。\n" +
-					                            "説明書の記載されている連絡先に連絡してください。");
+			JOptionPane
+					.showMessageDialog(null, "システムエラー\n"
+							+ "パソコンのIDを取得することができませんでした。\n"
+							+ "説明書の記載されている連絡先に連絡してください。");
 			return false;
 		}
 		if (macAddressList.size() == 0) {
-			JOptionPane.showMessageDialog(null, "インターネットに接続出来ていません\n" +
-					                            "本システムはインターネットに接続して利用します。\n" +
-					                            "インターネットに正しく接続できているかどうかご確認ください。");
+			JOptionPane.showMessageDialog(null, "インターネットに接続出来ていません\n"
+					+ "本システムはインターネットに接続して利用します。\n"
+					+ "インターネットに正しく接続できているかどうかご確認ください。");
 			return false;
 		}
 		// 複合化したバイト配列を元の文字列に変換
@@ -208,9 +218,9 @@ public final class testInputPanel extends JFrame {
 				return true;
 			}
 		}
-		JOptionPane.showMessageDialog(null, "ライセンスキーが間違っています\n" +
-				                            "他のパソコンのライセンスキーを入力してしまったかライセンスキーが壊れている可能性があります。\n" +
-				                            "ご確認ください。");
+		JOptionPane.showMessageDialog(null, "ライセンスキーが間違っています\n"
+				+ "他のパソコンのライセンスキーを入力してしまったかライセンスキーが壊れている可能性があります。\n"
+				+ "ご確認ください。");
 		return false;
 	}
 
